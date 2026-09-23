@@ -626,35 +626,18 @@ video{
 
     /*
      * =======================================================
-     * CAMINO PRINCIPAL
+     * RETORNO ROBUSTO
      * =======================================================
      *
-     * Ahora SIEMPRE intentamos regresar mediante returnUrl.
+     * Usamos DOS caminos compatibles entre sí:
      *
-     * Esto evita depender de:
+     * 1) postMessage hacia la PublicApp que abrió este escáner.
+     * 2) returnUrl como respaldo si el navegador no conserva opener.
      *
-     * window.opener
-     * postMessage
-     * window.close()
-     *
-     * que es precisamente lo que estaba provocando
-     * el problema actual.
+     * Esto evita depender de un único mecanismo de navegación.
      */
 
-    if(volverPorURL(codigo)){
-
-      return;
-
-    }
-
-
-    /*
-     * =======================================================
-     * RESPALDO
-     * =======================================================
-     *
-     * Solo si no existe un returnUrl válido.
-     */
+    let mensajeEnviado = false;
 
     if(
       window.opener &&
@@ -672,13 +655,25 @@ video{
           '*'
         );
 
+        mensajeEnviado = true;
+
+        /*
+         * Damos tiempo a PublicApp para procesar el mensaje.
+         * Si por alguna razón el mensaje no llega, el mismo
+         * escáner utilizará automáticamente returnUrl.
+         */
         setTimeout(function(){
-
-          try{
-            window.close();
-          }catch(e){}
-
-        },350);
+          if(
+            returnUrl &&
+            retornoPermitido(returnUrl)
+          ){
+            try{
+              volverPorURL(codigo);
+              return;
+            }catch(e){}
+          }
+          try{window.close();}catch(e){}
+        },800);
 
         return;
 
@@ -686,6 +681,13 @@ video{
 
     }
 
+    /*
+     * Si no existe opener, regresamos directamente por la URL
+     * entregada por PublicApp.
+     */
+    if(volverPorURL(codigo)){
+      return;
+    }
 
     setStatus(
       '❌ No se pudo regresar a Karaoke TikTok. Pulsa VOLVER y abre nuevamente el escáner desde la app.',
