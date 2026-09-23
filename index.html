@@ -80,7 +80,14 @@
     try{video.pause()}catch(e){} video.srcObject=null;
   }
   function enviar(codigo){
-    if(enviando)return;enviando=true;terminar();setStatus('✅ QR DETECTADO · Regresando a Karaoke TikTok…');
+    if(enviando)return;
+    enviando=true;
+    codigo=String(codigo||'').trim().toUpperCase();
+    terminar();
+    setStatus('✅ QR DETECTADO · Regresando a Karaoke TikTok…');
+
+    // Camino principal: la PublicApp abrió esta ventana. Le devolvemos
+    // únicamente el código detectado y el nonce de esta sesión.
     if(window.opener&&!window.opener.closed){
       try{
         window.opener.postMessage({type:'KTK_QR_RESULT',nonce:nonce,codigo:codigo},'*');
@@ -88,8 +95,12 @@
         return;
       }catch(e){}
     }
+
+    // Respaldo: si el navegador no conserva window.opener, regresamos por
+    // la URL firmada que la PublicApp entregó al abrir el escáner.
     if(volverPorURL(codigo))return;
-    setStatus('❌ No se pudo regresar a Karaoke TikTok. Pulsa VOLVER y vuelve a iniciar el escáner.',true);
+
+    setStatus('❌ No se pudo regresar a Karaoke TikTok. Pulsa VOLVER y abre nuevamente el escáner desde la app.',true);
   }
   function analizar(){
     if(!activo)return;
