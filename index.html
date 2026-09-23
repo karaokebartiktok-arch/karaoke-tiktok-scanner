@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#05060a">
+<title>Karaoke TikTok · Escáner QR</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#05060a;color:#fff;font-family:Arial,Helvetica,sans-serif}body{display:flex;justify-content:center;align-items:center;padding:18px}.app{width:min(520px,100%);text-align:center}.brand{font-weight:900;letter-spacing:2px;font-size:25px}.sub{margin:6px 0 18px;color:#b9c1cf;font-size:13px}.scanner{position:relative;overflow:hidden;width:100%;aspect-ratio:3/4;max-height:72vh;border-radius:24px;background:#000;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 18px 50px rgba(0,0,0,.55)}video{width:100%;height:100%;object-fit:cover;display:block}.shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.42),transparent 25%,transparent 75%,rgba(0,0,0,.58));pointer-events:none}.frame{position:absolute;left:12%;right:12%;top:27%;bottom:27%;border:2px solid rgba(0,234,255,.95);border-radius:18px;box-shadow:0 0 25px rgba(0,234,255,.2) inset,0 0 18px rgba(0,234,255,.25);pointer-events:none}.frame:after{content:"";position:absolute;left:8%;right:8%;height:2px;top:12%;background:#00eaff;box-shadow:0 0 12px #00eaff;animation:scan 2s linear infinite}@keyframes scan{0%{top:8%}50%{top:90%}100%{top:8%}}.corner{position:absolute;width:38px;height:38px;border-color:#fff;border-style:solid}.c1{left:12%;top:27%;border-width:4px 0 0 4px;border-radius:16px 0 0 0}.c2{right:12%;top:27%;border-width:4px 4px 0 0;border-radius:0 16px 0 0}.c3{left:12%;bottom:27%;border-width:0 0 4px 4px;border-radius:0 0 0 16px}.c4{right:12%;bottom:27%;border-width:0 4px 4px 0;border-radius:0 0 16px 0}.status{margin:14px 4px 0;min-height:42px;display:flex;align-items:center;justify-content:center;color:#eafaff;font-weight:700;font-size:14px}.hint{color:#9aa4b2;font-size:12px;line-height:1.5;margin-top:8px}.close{margin-top:14px;border:0;border-radius:14px;padding:12px 18px;background:#151922;color:#fff;font-weight:800;cursor:pointer}.error{color:#ffb4b4}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="brand">KARAOKE TIKTOK</div>
+  <div class="sub">ESCÁNER QR DE TU MESA</div>
+  <div class="scanner">
+    <video id="video" autoplay muted playsinline></video>
+    <div class="shade"></div><div class="frame"></div>
+    <div class="corner c1"></div><div class="corner c2"></div><div class="corner c3"></div><div class="corner c4"></div>
+  </div>
+  <div id="status" class="status">⏳ ACTIVANDO ESCÁNER…</div>
+  <div class="hint">Apunta directamente al QR de tu mesa. No se toma ninguna fotografía ni se seleccionan imágenes.</div>
+  <button class="close" type="button" onclick="cerrar()">↩️ VOLVER</button>
+  <canvas id="canvas" hidden></canvas>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<script>
+(function(){
+  const params=new URLSearchParams(location.search);
+  const nonce=params.get('nonce')||'';
+  const video=document.getElementById('video');
+  const canvas=document.getElementById('canvas');
+  const status=document.getElementById('status');
+  let stream=null,activo=false,raf=null,detector=null,enviando=false;
+
+  function setStatus(t,err){status.textContent=t;status.classList.toggle('error',!!err)}
+  function extraerCodigo(texto){
+    const raw=String(texto||'').trim(); if(!raw)return '';
+    try{const u=new URL(raw);const m=u.searchParams.get('mesa');if(m)return decodeURIComponent(m).trim().toUpperCase()}catch(e){}
+    const m=raw.match(/(?:^|[?&])mesa=([^&]+)/i); if(m)return decodeURIComponent(m[1]).trim().toUpperCase();
+    if(/^MTK-[A-Z0-9]+$/i.test(raw))return raw.toUpperCase();
+    return '';
+  }
+  function prepararDetector(){
+    try{
+      if(!('BarcodeDetector' in window))return;
+      if(typeof BarcodeDetector.getSupportedFormats==='function'){
+        BarcodeDetector.getSupportedFormats().then(function(f){
+          if(Array.isArray(f)&&f.indexOf('qr_code')>=0)detector=new BarcodeDetector({formats:['qr_code']});
+        }).catch(function(){});
+      }else detector=new BarcodeDetector({formats:['qr_code']});
+    }catch(e){detector=null}
+  }
+  function terminar(){
+    activo=false;if(raf)cancelAnimationFrame(raf);raf=null;
+    if(stream){stream.getTracks().forEach(function(t){try{t.stop()}catch(e){}});stream=null}
+    try{video.pause()}catch(e){} video.srcObject=null;
+  }
+  function enviar(codigo){
+    if(enviando)return;enviando=true;terminar();setStatus('✅ QR DETECTADO · Regresando a Karaoke TikTok…');
+    if(window.opener&&!window.opener.closed){
+      window.opener.postMessage({type:'KTK_QR_RESULT',nonce:nonce,codigo:codigo},'*');
+      setTimeout(function(){try{window.close()}catch(e){}},350);
+      return;
+    }
+    setStatus('❌ No se encontró la ventana de Karaoke TikTok. Vuelve atrás y abre nuevamente el escáner.',true);
+  }
+  function analizar(){
+    if(!activo)return;
+    if(video.readyState>=2&&video.videoWidth>0&&video.videoHeight>0){
+      if(detector){
+        detector.detect(video).then(function(codes){
+          if(!activo)return;
+          if(codes&&codes.length){const c=extraerCodigo(codes[0].rawValue||'');if(c){enviar(c);return}}
+          analizarCanvas();
+        }).catch(function(){analizarCanvas()});
+      }else analizarCanvas();
+    }
+    raf=requestAnimationFrame(analizar);
+  }
+  function analizarCanvas(){
+    if(!activo||typeof jsQR!=='function')return;
+    const maxW=1000,scale=Math.min(1,maxW/video.videoWidth);
+    canvas.width=Math.max(1,Math.round(video.videoWidth*scale));canvas.height=Math.max(1,Math.round(video.videoHeight*scale));
+    const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(video,0,0,canvas.width,canvas.height);
+    try{const image=ctx.getImageData(0,0,canvas.width,canvas.height);const code=jsQR(image.data,image.width,image.height,{inversionAttempts:'attemptBoth'});if(code&&code.data){const c=extraerCodigo(code.data);if(c)enviar(c)}}catch(e){}
+  }
+  function iniciar(){
+    if(!window.isSecureContext||!navigator.mediaDevices||typeof navigator.mediaDevices.getUserMedia!=='function'){
+      setStatus('❌ Este navegador no permite la cámara en esta página.',true);return;
+    }
+    setStatus('⏳ ACTIVANDO CÁMARA…');prepararDetector();
+    navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}}}).then(function(s){
+      stream=s;activo=true;video.srcObject=s;video.muted=true;video.setAttribute('playsinline','true');
+      return video.play();
+    }).then(function(){setStatus('🔎 BUSCANDO QR… Apunta al código de tu mesa.');analizar()}).catch(function(e){
+      let m='❌ No se pudo activar la cámara.';
+      if(e&&e.name==='NotAllowedError')m='❌ Permiso de cámara bloqueado. Autoriza la cámara para el escáner de Karaoke TikTok.';
+      else if(e&&e.name==='NotFoundError')m='❌ No se encontró una cámara disponible.';
+      else if(e&&e.name==='NotReadableError')m='❌ La cámara está siendo utilizada por otra aplicación.';
+      setStatus(m,true);
+    });
+  }
+  window.cerrar=function(){terminar();try{window.close()}catch(e){} if(window.opener&&!window.opener.closed){try{window.opener.focus()}catch(e){}}};
+  window.addEventListener('beforeunload',terminar);
+  iniciar();
+})();
+</script>
+</body>
+</html>
