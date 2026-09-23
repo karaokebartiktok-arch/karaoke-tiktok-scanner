@@ -5,1081 +5,155 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#05060a">
 <title>Karaoke TikTok · Escáner QR</title>
-
 <style>
-*{
-  box-sizing:border-box
-}
-
-html,
-body{
-  margin:0;
-  min-height:100%;
-  background:#05060a;
-  color:#fff;
-  font-family:Arial,Helvetica,sans-serif
-}
-
-body{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:18px
-}
-
-.app{
-  width:min(520px,100%);
-  text-align:center
-}
-
-.brand{
-  font-weight:900;
-  letter-spacing:2px;
-  font-size:25px
-}
-
-.sub{
-  margin:6px 0 18px;
-  color:#b9c1cf;
-  font-size:13px
-}
-
-.scanner{
-  position:relative;
-  overflow:hidden;
-  width:100%;
-  aspect-ratio:3/4;
-  max-height:72vh;
-  border-radius:24px;
-  background:#000;
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,.08),
-    0 18px 50px rgba(0,0,0,.55)
-}
-
-video{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block
-}
-
-.shade{
-  position:absolute;
-  inset:0;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(0,0,0,.42),
-      transparent 25%,
-      transparent 75%,
-      rgba(0,0,0,.58)
-    );
-  pointer-events:none
-}
-
-.frame{
-  position:absolute;
-  left:12%;
-  right:12%;
-  top:27%;
-  bottom:27%;
-  border:2px solid rgba(0,234,255,.95);
-  border-radius:18px;
-  box-shadow:
-    0 0 25px rgba(0,234,255,.2) inset,
-    0 0 18px rgba(0,234,255,.25);
-  pointer-events:none
-}
-
-.frame:after{
-  content:"";
-  position:absolute;
-  left:8%;
-  right:8%;
-  height:2px;
-  top:12%;
-  background:#00eaff;
-  box-shadow:0 0 12px #00eaff;
-  animation:scan 2s linear infinite
-}
-
-@keyframes scan{
-  0%{top:8%}
-  50%{top:90%}
-  100%{top:8%}
-}
-
-.corner{
-  position:absolute;
-  width:38px;
-  height:38px;
-  border-color:#fff;
-  border-style:solid
-}
-
-.c1{
-  left:12%;
-  top:27%;
-  border-width:4px 0 0 4px;
-  border-radius:16px 0 0 0
-}
-
-.c2{
-  right:12%;
-  top:27%;
-  border-width:4px 4px 0 0;
-  border-radius:0 16px 0 0
-}
-
-.c3{
-  left:12%;
-  bottom:27%;
-  border-width:0 0 4px 4px;
-  border-radius:0 0 0 16px
-}
-
-.c4{
-  right:12%;
-  bottom:27%;
-  border-width:0 4px 4px 0;
-  border-radius:0 0 16px 0
-}
-
-.status{
-  margin:14px 4px 0;
-  min-height:42px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#eafaff;
-  font-weight:700;
-  font-size:14px
-}
-
-.hint{
-  color:#9aa4b2;
-  font-size:12px;
-  line-height:1.5;
-  margin-top:8px
-}
-
-.close{
-  margin-top:14px;
-  border:0;
-  border-radius:14px;
-  padding:12px 18px;
-  background:#151922;
-  color:#fff;
-  font-weight:800;
-  cursor:pointer
-}
-
-.error{
-  color:#ffb4b4
-}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#05060a;color:#fff;font-family:Arial,Helvetica,sans-serif}body{display:flex;justify-content:center;align-items:center;padding:18px}.app{width:min(520px,100%);text-align:center}.brand{font-weight:900;letter-spacing:2px;font-size:25px}.sub{margin:6px 0 18px;color:#b9c1cf;font-size:13px}.scanner{position:relative;overflow:hidden;width:100%;aspect-ratio:3/4;max-height:72vh;border-radius:24px;background:#000;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 18px 50px rgba(0,0,0,.55)}video{width:100%;height:100%;object-fit:cover;display:block}.shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.42),transparent 25%,transparent 75%,rgba(0,0,0,.58));pointer-events:none}.frame{position:absolute;left:12%;right:12%;top:27%;bottom:27%;border:2px solid rgba(0,234,255,.95);border-radius:18px;box-shadow:0 0 25px rgba(0,234,255,.2) inset,0 0 18px rgba(0,234,255,.25);pointer-events:none}.frame:after{content:"";position:absolute;left:8%;right:8%;height:2px;top:12%;background:#00eaff;box-shadow:0 0 12px #00eaff;animation:scan 2s linear infinite}@keyframes scan{0%{top:8%}50%{top:90%}100%{top:8%}}.corner{position:absolute;width:38px;height:38px;border-color:#fff;border-style:solid}.c1{left:12%;top:27%;border-width:4px 0 0 4px;border-radius:16px 0 0 0}.c2{right:12%;top:27%;border-width:4px 4px 0 0;border-radius:0 16px 0 0}.c3{left:12%;bottom:27%;border-width:0 0 4px 4px;border-radius:0 0 0 16px}.c4{right:12%;bottom:27%;border-width:0 4px 4px 0;border-radius:0 0 16px 0}.status{margin:14px 4px 0;min-height:42px;display:flex;align-items:center;justify-content:center;color:#eafaff;font-weight:700;font-size:14px}.hint{color:#9aa4b2;font-size:12px;line-height:1.5;margin-top:8px}.close{margin-top:14px;border:0;border-radius:14px;padding:12px 18px;background:#151922;color:#fff;font-weight:800;cursor:pointer}.error{color:#ffb4b4}.ok{color:#bfffc9}
 </style>
 </head>
-
 <body>
-
 <div class="app">
-
   <div class="brand">KARAOKE TIKTOK</div>
-
-  <div class="sub">
-    ESCÁNER QR DE TU MESA
-  </div>
-
+  <div class="sub">ESCÁNER QR DE TU MESA</div>
   <div class="scanner">
-
-    <video
-      id="video"
-      autoplay
-      muted
-      playsinline>
-    </video>
-
-    <div class="shade"></div>
-
-    <div class="frame"></div>
-
-    <div class="corner c1"></div>
-    <div class="corner c2"></div>
-    <div class="corner c3"></div>
-    <div class="corner c4"></div>
-
+    <video id="video" autoplay muted playsinline></video>
+    <div class="shade"></div><div class="frame"></div>
+    <div class="corner c1"></div><div class="corner c2"></div><div class="corner c3"></div><div class="corner c4"></div>
   </div>
-
-  <div id="status" class="status">
-    ⏳ ACTIVANDO ESCÁNER…
-  </div>
-
-  <div class="hint">
-    Apunta directamente al QR de tu mesa.
-    No se toma ninguna fotografía ni se seleccionan imágenes.
-  </div>
-
-  <button
-    class="close"
-    type="button"
-    onclick="cerrar()">
-    ↩️ VOLVER
-  </button>
-
+  <div id="status" class="status">⏳ ACTIVANDO ESCÁNER…</div>
+  <div class="hint">Apunta directamente al QR de tu mesa. No se toma ninguna fotografía ni se seleccionan imágenes.</div>
+  <button class="close" type="button" onclick="cerrar()">↩️ VOLVER</button>
   <canvas id="canvas" hidden></canvas>
-
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
-
 <script>
 (function(){
+'use strict';
+const params=new URLSearchParams(location.search);
+const nonce=String(params.get('nonce')||'');
+const returnUrl=String(params.get('returnUrl')||'');
+const video=document.getElementById('video');
+const canvas=document.getElementById('canvas');
+const status=document.getElementById('status');
+let stream=null,activo=false,enviando=false,detector=null,decodeBusy=false,loopTimer=null,ackTimer=null;
+let jsqrReady=typeof window.jsQR==='function';
 
-  /* =========================================================
-     DATOS DE RETORNO
-     ========================================================= */
+function setStatus(t,error,ok){status.textContent=t;status.classList.toggle('error',!!error);status.classList.toggle('ok',!!ok)}
+function retornoPermitido(url){try{const u=new URL(url);if(u.protocol!=='https:')return false;if(u.hostname==='script.google.com'&&u.pathname.indexOf('/macros/')===0)return true;if(u.hostname==='script.googleusercontent.com'&&(u.pathname==='/userCodeAppPanel'||u.pathname.indexOf('/macros/')===0))return true;return false}catch(e){return false}}
+function extraerCodigo(texto){
+  let raw=String(texto||'').trim();if(!raw)return '';
+  try{const u=new URL(raw);const m=u.searchParams.get('mesa');if(m)return normalizarCodigo(m)}catch(e){}
+  const m=raw.match(/(?:^|[?&])mesa=([^&\s]+)/i);if(m)return normalizarCodigo(m[1]);
+  const compact=raw.replace(/[\r\n]+/g,'').trim();
+  const exact=compact.match(/^MTK-[A-Z0-9]{8}$/i);if(exact)return exact[0].toUpperCase();
+  const embedded=compact.match(/MTK-[A-Z0-9]{8}/i);if(embedded)return embedded[0].toUpperCase();
+  return '';
+}
+function normalizarCodigo(v){const s=decodeURIComponent(String(v||'')).trim().toUpperCase();return /^MTK-[A-Z0-9]{8}$/.test(s)?s:''}
 
-  const params = new URLSearchParams(location.search);
+function enviar(codigo){
+  if(enviando)return;
+  codigo=normalizarCodigo(codigo);if(!codigo)return;
+  enviando=true;detenerCamara();setStatus('✅ QR DETECTADO · Regresando a Karaoke TikTok…',false,true);
 
-  const nonce =
-    params.get('nonce') || '';
-
-  const returnUrl =
-    params.get('returnUrl') || '';
-
-
-  /* =========================================================
-     VALIDACIÓN DEL DESTINO DE RETORNO
-     ========================================================= */
-
-  function retornoPermitido(url){
-
+  let enviado=false;
+  if(window.opener&&!window.opener.closed){
     try{
-
-      const u = new URL(url);
-
-      if(u.protocol !== 'https:'){
-        return false;
-      }
-
-      if(
-        u.hostname === 'script.google.com' &&
-        u.pathname.indexOf('/macros/') === 0
-      ){
-        return true;
-      }
-
-      if(
-        u.hostname === 'script.googleusercontent.com' &&
-        (
-          u.pathname === '/userCodeAppPanel' ||
-          u.pathname.indexOf('/macros/') === 0
-        )
-      ){
-        return true;
-      }
-
-      return false;
-
-    }catch(e){
-
-      return false;
-
-    }
-
-  }
-
-
-  /* =========================================================
-     REGRESAR DIRECTAMENTE A KARAOKE TIKTOK
-     ========================================================= */
-
-  function volverPorURL(codigo){
-
-    if(!returnUrl){
-      return false;
-    }
-
-    if(!retornoPermitido(returnUrl)){
-      return false;
-    }
-
-    try{
-
-      const u = new URL(returnUrl);
-
-      /*
-       * Conservamos los parámetros originales
-       * enviados por PublicApp.
-       */
-
-      u.searchParams.set(
-        'ktk_return',
-        '1'
-      );
-
-      u.searchParams.set(
-        'nonce',
-        nonce
-      );
-
-      u.searchParams.set(
-        'codigo',
-        String(codigo || '')
-          .trim()
-          .toUpperCase()
-      );
-
-      /*
-       * IMPORTANTE:
-       *
-       * El escáner se desplaza directamente
-       * al userCodeAppPanel de Karaoke TikTok.
-       *
-       * Ya NO dependemos de window.opener.
-       */
-
-      location.replace(
-        u.toString()
-      );
-
-      return true;
-
-    }catch(e){
-
-      return false;
-
-    }
-
-  }
-
-
-  /* =========================================================
-     ELEMENTOS
-     ========================================================= */
-
-  const video =
-    document.getElementById('video');
-
-  const canvas =
-    document.getElementById('canvas');
-
-  const status =
-    document.getElementById('status');
-
-
-  /* =========================================================
-     ESTADO
-     ========================================================= */
-
-  let stream = null;
-
-  let activo = false;
-
-  let raf = null;
-
-  let detector = null;
-
-  let enviando = false;
-
-
-  /* =========================================================
-     ESTADO VISUAL
-     ========================================================= */
-
-  function setStatus(texto, error){
-
-    status.textContent = texto;
-
-    status.classList.toggle(
-      'error',
-      !!error
-    );
-
-  }
-
-
-  /* =========================================================
-     EXTRAER CÓDIGO DEL QR
-     ========================================================= */
-
-  function extraerCodigo(texto){
-
-    const raw =
-      String(texto || '').trim();
-
-    if(!raw){
-      return '';
-    }
-
-
-    /*
-     * CASO 1
-     *
-     * QR antiguo:
-     *
-     * ...?mesa=MTK-XXXXXXXX
-     */
-
-    try{
-
-      const u =
-        new URL(raw);
-
-      const mesa =
-        u.searchParams.get('mesa');
-
-      if(mesa){
-
-        return decodeURIComponent(
-          mesa
-        )
-        .trim()
-        .toUpperCase();
-
-      }
-
-    }catch(e){}
-
-
-    /*
-     * CASO 2
-     *
-     * Texto con:
-     *
-     * mesa=MTK-XXXXXXXX
-     */
-
-    const match =
-      raw.match(
-        /(?:^|[?&])mesa=([^&]+)/i
-      );
-
-    if(match){
-
-      try{
-
-        return decodeURIComponent(
-          match[1]
-        )
-        .trim()
-        .toUpperCase();
-
-      }catch(e){
-
-        return String(
-          match[1] || ''
-        )
-        .trim()
-        .toUpperCase();
-
-      }
-
-    }
-
-
-    /*
-     * CASO 3
-     *
-     * QR nuevo:
-     *
-     * MTK-XXXXXXXX
-     */
-
-    if(
-      /^MTK-[A-Z0-9]+$/i.test(raw)
-    ){
-
-      return raw.toUpperCase();
-
-    }
-
-
-    return '';
-
-  }
-
-
-  /* =========================================================
-     BARCODE DETECTOR
-     ========================================================= */
-
-  function prepararDetector(){
-
-    try{
-
-      if(!('BarcodeDetector' in window)){
-        return;
-      }
-
-      if(
-        typeof BarcodeDetector.getSupportedFormats ===
-        'function'
-      ){
-
-        BarcodeDetector
-          .getSupportedFormats()
-          .then(function(formatos){
-
-            if(
-              Array.isArray(formatos) &&
-              formatos.indexOf('qr_code') >= 0
-            ){
-
-              detector =
-                new BarcodeDetector({
-                  formats:['qr_code']
-                });
-
-            }
-
-          })
-          .catch(function(){});
-
-      }else{
-
-        detector =
-          new BarcodeDetector({
-            formats:['qr_code']
-          });
-
-      }
-
-    }catch(e){
-
-      detector = null;
-
-    }
-
-  }
-
-
-  /* =========================================================
-     DETENER CÁMARA
-     ========================================================= */
-
-  function terminar(){
-
-    activo = false;
-
-    if(raf){
-
-      cancelAnimationFrame(raf);
-
-      raf = null;
-
-    }
-
-    if(stream){
-
-      stream
-        .getTracks()
-        .forEach(function(track){
-
-          try{
-            track.stop();
-          }catch(e){}
-
-        });
-
-      stream = null;
-
-    }
-
-    try{
-      video.pause();
-    }catch(e){}
-
-    video.srcObject = null;
-
-  }
-
-
-  /* =========================================================
-     ENVIAR RESULTADO
-     ========================================================= */
-
-  function enviar(codigo){
-
-    if(enviando){
-      return;
-    }
-
-    codigo =
-      String(codigo || '')
-        .trim()
-        .toUpperCase();
-
-    if(!codigo){
-      return;
-    }
-
-    enviando = true;
-
-    terminar();
-
-    setStatus(
-      '✅ QR DETECTADO · Regresando a Karaoke TikTok…'
-    );
-
-
-    /*
-     * =======================================================
-     * RETORNO ROBUSTO
-     * =======================================================
-     *
-     * Usamos DOS caminos compatibles entre sí:
-     *
-     * 1) postMessage hacia la PublicApp que abrió este escáner.
-     * 2) returnUrl como respaldo si el navegador no conserva opener.
-     *
-     * Esto evita depender de un único mecanismo de navegación.
-     */
-
-    let mensajeEnviado = false;
-
-    if(
-      window.opener &&
-      !window.opener.closed
-    ){
-
-      try{
-
-        window.opener.postMessage(
-          {
-            type:'KTK_QR_RESULT',
-            nonce:nonce,
-            codigo:codigo
-          },
-          '*'
-        );
-
-        mensajeEnviado = true;
-
-        /*
-         * Damos tiempo a PublicApp para procesar el mensaje.
-         * Si por alguna razón el mensaje no llega, el mismo
-         * escáner utilizará automáticamente returnUrl.
-         */
-        setTimeout(function(){
-          if(
-            returnUrl &&
-            retornoPermitido(returnUrl)
-          ){
-            try{
-              volverPorURL(codigo);
-              return;
-            }catch(e){}
-          }
-          try{window.close();}catch(e){}
-        },800);
-
-        return;
-
-      }catch(e){}
-
-    }
-
-    /*
-     * Si no existe opener, regresamos directamente por la URL
-     * entregada por PublicApp.
-     */
-    if(volverPorURL(codigo)){
-      return;
-    }
-
-    setStatus(
-      '❌ No se pudo regresar a Karaoke TikTok. Pulsa VOLVER y abre nuevamente el escáner desde la app.',
-      true
-    );
-
-  }
-
-
-  /* =========================================================
-     ESCANEO CON BARCODE DETECTOR
-     ========================================================= */
-
-  function analizar(){
-
-    if(!activo){
-      return;
-    }
-
-
-    if(
-      video.readyState >= 2 &&
-      video.videoWidth > 0 &&
-      video.videoHeight > 0
-    ){
-
-      if(detector){
-
-        detector
-          .detect(video)
-          .then(function(codes){
-
-            if(!activo){
-              return;
-            }
-
-            if(
-              codes &&
-              codes.length
-            ){
-
-              const codigo =
-                extraerCodigo(
-                  codes[0].rawValue || ''
-                );
-
-              if(codigo){
-
-                enviar(codigo);
-
-                return;
-
-              }
-
-            }
-
-            analizarCanvas();
-
-          })
-          .catch(function(){
-
-            analizarCanvas();
-
-          });
-
-      }else{
-
-        analizarCanvas();
-
-      }
-
-    }
-
-    raf =
-      requestAnimationFrame(
-        analizar
-      );
-
-  }
-
-
-  /* =========================================================
-     ESCANEO CON JSQR
-     ========================================================= */
-
-  function analizarCanvas(){
-
-    if(
-      !activo ||
-      typeof jsQR !== 'function'
-    ){
-
-      return;
-
-    }
-
-    const maxW = 1000;
-
-    const scale =
-      Math.min(
-        1,
-        maxW / video.videoWidth
-      );
-
-    canvas.width =
-      Math.max(
-        1,
-        Math.round(
-          video.videoWidth * scale
-        )
-      );
-
-    canvas.height =
-      Math.max(
-        1,
-        Math.round(
-          video.videoHeight * scale
-        )
-      );
-
-    const ctx =
-      canvas.getContext(
-        '2d',
-        {
-          willReadFrequently:true
+      window.opener.postMessage({type:'KTK_QR_RESULT',nonce:nonce,codigo:codigo},'*');
+      enviado=true;
+      ackTimer=setTimeout(function(){
+        if(enviado){
+          if(volverPorURL(codigo))return;
+          try{window.close()}catch(e){}
         }
-      );
-
-    ctx.drawImage(
-      video,
-      0,
-      0,
-      canvas.width,
-      canvas.height
-    );
-
-    try{
-
-      const image =
-        ctx.getImageData(
-          0,
-          0,
-          canvas.width,
-          canvas.height
-        );
-
-      const code =
-        jsQR(
-          image.data,
-          image.width,
-          image.height,
-          {
-            inversionAttempts:'attemptBoth'
-          }
-        );
-
-      if(
-        code &&
-        code.data
-      ){
-
-        const codigo =
-          extraerCodigo(
-            code.data
-          );
-
-        if(codigo){
-
-          enviar(codigo);
-
-        }
-
-      }
-
-    }catch(e){}
-
-  }
-
-
-  /* =========================================================
-     INICIAR CÁMARA
-     ========================================================= */
-
-  function iniciar(){
-
-    if(
-      !window.isSecureContext ||
-      !navigator.mediaDevices ||
-      typeof navigator.mediaDevices.getUserMedia !==
-      'function'
-    ){
-
-      setStatus(
-        '❌ Este navegador no permite la cámara en esta página.',
-        true
-      );
-
+      },1400);
       return;
-
-    }
-
-
-    setStatus(
-      '⏳ ACTIVANDO CÁMARA…'
-    );
-
-
-    prepararDetector();
-
-
-    navigator.mediaDevices
-      .getUserMedia({
-
-        audio:false,
-
-        video:{
-          facingMode:{
-            ideal:'environment'
-          },
-
-          width:{
-            ideal:1280
-          },
-
-          height:{
-            ideal:720
-          }
-
-        }
-
-      })
-      .then(function(s){
-
-        stream = s;
-
-        activo = true;
-
-        video.srcObject = s;
-
-        video.muted = true;
-
-        video.setAttribute(
-          'playsinline',
-          'true'
-        );
-
-        return video.play();
-
-      })
-      .then(function(){
-
-        setStatus(
-          '🔎 BUSCANDO QR… Apunta al código de tu mesa.'
-        );
-
-        analizar();
-
-      })
-      .catch(function(e){
-
-        let mensaje =
-          '❌ No se pudo activar la cámara.';
-
-        if(
-          e &&
-          e.name === 'NotAllowedError'
-        ){
-
-          mensaje =
-            '❌ Permiso de cámara bloqueado. Autoriza la cámara para el escáner de Karaoke TikTok.';
-
-        }else if(
-          e &&
-          e.name === 'NotFoundError'
-        ){
-
-          mensaje =
-            '❌ No se encontró una cámara disponible.';
-
-        }else if(
-          e &&
-          e.name === 'NotReadableError'
-        ){
-
-          mensaje =
-            '❌ La cámara está siendo utilizada por otra aplicación.';
-
-        }
-
-        setStatus(
-          mensaje,
-          true
-        );
-
-      });
-
+    }catch(e){enviado=false}
   }
+  if(volverPorURL(codigo))return;
+  setStatus('❌ No se pudo regresar a Karaoke TikTok. Pulsa VOLVER y abre nuevamente el escáner.',true);
+}
+function volverPorURL(codigo){
+  if(!returnUrl||!retornoPermitido(returnUrl))return false;
+  try{const u=new URL(returnUrl);u.searchParams.set('ktk_qr_result',codigo);u.searchParams.set('ktk_qr_nonce',nonce);location.replace(u.toString());return true}catch(e){return false}
+}
+window.addEventListener('message',function(event){
+  if(!event.data||event.data.type!=='KTK_QR_ACK')return;
+  if(String(event.data.nonce||'')!==nonce)return;
+  if(ackTimer){clearTimeout(ackTimer);ackTimer=null}
+  try{window.close()}catch(e){}
+});
 
-
-  /* =========================================================
-     BOTÓN VOLVER
-     ========================================================= */
-
-  window.cerrar = function(){
-
-    terminar();
-
-
-    /*
-     * Primero intentamos regresar mediante
-     * la misma returnUrl que entregó PublicApp.
-     */
-
-    if(
-      returnUrl &&
-      retornoPermitido(returnUrl)
-    ){
-
-      try{
-
-        const u =
-          new URL(returnUrl);
-
-        /*
-         * No hay QR escaneado.
-         * Por eso simplemente volvemos
-         * al panel que abrió el escáner.
-         */
-
-        u.searchParams.delete(
-          'codigo'
-        );
-
-        location.replace(
-          u.toString()
-        );
-
-        return;
-
-      }catch(e){}
-
-    }
-
-
-    /*
-     * Respaldo para ventanas abiertas
-     * directamente desde otra ventana.
-     */
-
-    if(
-      window.opener &&
-      !window.opener.closed
-    ){
-
-      try{
-        window.opener.focus();
-      }catch(e){}
-
-      try{
-        window.close();
-      }catch(e){}
-
-      return;
-
-    }
-
-
-    try{
-      window.close();
-    }catch(e){}
-
-  };
-
-
-  /* =========================================================
-     LIMPIEZA
-     ========================================================= */
-
-  window.addEventListener(
-    'beforeunload',
-    terminar
-  );
-
-
-  /* =========================================================
-     ARRANQUE
-     ========================================================= */
-
-  iniciar();
-
+function prepararDetector(){
+  detector=null;
+  if(!('BarcodeDetector' in window))return Promise.resolve(false);
+  try{
+    const p=typeof BarcodeDetector.getSupportedFormats==='function'?BarcodeDetector.getSupportedFormats():Promise.resolve(['qr_code']);
+    return p.then(function(f){if(Array.isArray(f)&&f.indexOf('qr_code')>=0){detector=new BarcodeDetector({formats:['qr_code']});return true}return false}).catch(function(){detector=null;return false});
+  }catch(e){detector=null;return Promise.resolve(false)}
+}
+function cargarJsQRFallback(){
+  if(jsqrReady)return Promise.resolve(true);
+  return new Promise(function(resolve){
+    const s=document.createElement('script');s.src='https://unpkg.com/jsqr@1.4.0/dist/jsQR.js';s.onload=function(){jsqrReady=typeof window.jsQR==='function';resolve(jsqrReady)};s.onerror=function(){resolve(false)};document.head.appendChild(s);
+  });
+}
+function analizarCanvas(){
+  if(!activo||decodeBusy||!jsqrReady||video.videoWidth<1||video.videoHeight<1)return false;
+  decodeBusy=true;
+  try{
+    const maxW=900,scale=Math.min(1,maxW/video.videoWidth);
+    canvas.width=Math.max(1,Math.round(video.videoWidth*scale));canvas.height=Math.max(1,Math.round(video.videoHeight*scale));
+    const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(video,0,0,canvas.width,canvas.height);
+    const image=ctx.getImageData(0,0,canvas.width,canvas.height);
+    const code=window.jsQR(image.data,image.width,image.height,{inversionAttempts:'attemptBoth'});
+    if(code&&code.data){const codigo=extraerCodigo(code.data);if(codigo){decodeBusy=false;enviar(codigo);return true}}
+  }catch(e){}
+  decodeBusy=false;return false;
+}
+async function analizar(){
+  if(!activo||decodeBusy)return;
+  if(video.readyState<2||video.videoWidth<1||video.videoHeight<1)return;
+  decodeBusy=true;
+  let detectado='';
+  try{
+    if(detector){const codes=await detector.detect(video);if(codes&&codes.length){for(const c of codes){const x=extraerCodigo(c.rawValue||'');if(x){detectado=x;break}}}}
+  }catch(e){}
+  decodeBusy=false;
+  if(!activo)return;
+  if(detectado){enviar(detectado);return}
+  analizarCanvas();
+}
+function iniciarLoop(){
+  if(loopTimer)clearInterval(loopTimer);
+  loopTimer=setInterval(function(){analizar()},120);
+}
+function detenerCamara(){
+  activo=false;if(loopTimer){clearInterval(loopTimer);loopTimer=null}
+  if(stream){stream.getTracks().forEach(function(t){try{t.stop()}catch(e){}});stream=null}
+  try{video.pause()}catch(e){}video.srcObject=null;
+}
+function iniciar(){
+  if(!window.isSecureContext||!navigator.mediaDevices||typeof navigator.mediaDevices.getUserMedia!=='function'){setStatus('❌ Este navegador no permite la cámara en esta página.',true);return}
+  setStatus('⏳ ACTIVANDO CÁMARA…');
+  Promise.all([prepararDetector(),cargarJsQRFallback()]).then(function(motores){
+    if(!motores[0]&&!motores[1]){setStatus('❌ No se pudo cargar ningún motor de lectura QR.',true);return}
+    return navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}}});
+  }).then(function(s){
+    if(!s)return;stream=s;video.srcObject=s;video.muted=true;activo=true;return video.play();
+  }).then(function(){
+    if(!activo)return;
+    setStatus('🔎 BUSCANDO QR… Apunta al código de tu mesa.');iniciarLoop();
+  }).catch(function(e){
+    let m='❌ No se pudo activar la cámara.';
+    if(e&&e.name==='NotAllowedError')m='❌ Permiso de cámara bloqueado. Autoriza la cámara para el escáner de Karaoke TikTok.';
+    else if(e&&e.name==='NotFoundError')m='❌ No se encontró una cámara disponible.';
+    else if(e&&e.name==='NotReadableError')m='❌ La cámara está siendo utilizada por otra aplicación.';
+    setStatus(m,true);
+  });
+}
+window.cerrar=function(){detenerCamara();if(ackTimer){clearTimeout(ackTimer);ackTimer=null}if(returnUrl&&retornoPermitido(returnUrl)){try{location.replace(returnUrl);return}catch(e){}}try{if(window.opener&&!window.opener.closed)window.opener.focus()}catch(e){}setStatus('↩️ Puedes volver a Karaoke TikTok desde la ventana anterior.');};
+window.addEventListener('beforeunload',detenerCamara);
+iniciar();
 })();
 </script>
-
 </body>
 </html>
