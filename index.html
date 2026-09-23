@@ -28,6 +28,28 @@
 (function(){
   const params=new URLSearchParams(location.search);
   const nonce=params.get('nonce')||'';
+  const returnUrl=params.get('returnUrl')||'';
+
+  function retornoPermitido(url){
+    try{
+      const u=new URL(url);
+      return u.protocol==='https:' &&
+             (u.hostname==='script.google.com' || u.hostname==='script.googleusercontent.com') &&
+             u.pathname.indexOf('/macros/')===0;
+    }catch(e){return false}
+  }
+
+  function volverPorURL(codigo){
+    if(!returnUrl || !retornoPermitido(returnUrl))return false;
+    try{
+      const u=new URL(returnUrl);
+      u.searchParams.set('ktk_return','1');
+      u.searchParams.set('nonce',nonce);
+      u.searchParams.set('codigo',String(codigo||'').trim().toUpperCase());
+      location.replace(u.toString());
+      return true;
+    }catch(e){return false}
+  }
   const video=document.getElementById('video');
   const canvas=document.getElementById('canvas');
   const status=document.getElementById('status');
@@ -59,11 +81,14 @@
   function enviar(codigo){
     if(enviando)return;enviando=true;terminar();setStatus('✅ QR DETECTADO · Regresando a Karaoke TikTok…');
     if(window.opener&&!window.opener.closed){
-      window.opener.postMessage({type:'KTK_QR_RESULT',nonce:nonce,codigo:codigo},'*');
-      setTimeout(function(){try{window.close()}catch(e){}},350);
-      return;
+      try{
+        window.opener.postMessage({type:'KTK_QR_RESULT',nonce:nonce,codigo:codigo},'*');
+        setTimeout(function(){try{window.close()}catch(e){}},350);
+        return;
+      }catch(e){}
     }
-    setStatus('❌ No se encontró la ventana de Karaoke TikTok. Vuelve atrás y abre nuevamente el escáner.',true);
+    if(volverPorURL(codigo))return;
+    setStatus('❌ No se pudo regresar a Karaoke TikTok. Pulsa VOLVER y vuelve a iniciar el escáner.',true);
   }
   function analizar(){
     if(!activo)return;
@@ -101,7 +126,18 @@
       setStatus(m,true);
     });
   }
-  window.cerrar=function(){terminar();try{window.close()}catch(e){} if(window.opener&&!window.opener.closed){try{window.opener.focus()}catch(e){}}};
+  window.cerrar=function(){
+    terminar();
+    if(window.opener&&!window.opener.closed){
+      try{window.opener.focus()}catch(e){}
+      try{window.close()}catch(e){}
+      return;
+    }
+    if(returnUrl && retornoPermitido(returnUrl)){
+      try{location.replace(returnUrl);return}catch(e){}
+    }
+    try{window.close()}catch(e){}
+  };
   window.addEventListener('beforeunload',terminar);
   iniciar();
 })();
