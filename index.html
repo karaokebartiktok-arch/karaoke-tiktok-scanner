@@ -33,9 +33,10 @@
   function retornoPermitido(url){
     try{
       const u=new URL(url);
-      return u.protocol==='https:' &&
-             (u.hostname==='script.google.com' || u.hostname==='script.googleusercontent.com') &&
-             u.pathname.indexOf('/macros/')===0;
+      if(u.protocol!=='https:')return false;
+      if(u.hostname==='script.google.com' && u.pathname.indexOf('/macros/')===0)return true;
+      if(u.hostname==='script.googleusercontent.com' && (u.pathname==='/userCodeAppPanel' || u.pathname.indexOf('/macros/')===0))return true;
+      return false;
     }catch(e){return false}
   }
 
